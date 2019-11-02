@@ -1,0 +1,50 @@
+<?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once 'vendor/autoload.php';
+use \Doctrine\DBAL\Configuration;
+use \Doctrine\DBAL\DriverManager;
+
+$em = DriverManager::getConnection(['url' => 'sqlite:///livros.sqlite'], new Configuration());
+
+if(false){
+
+	try{
+		$em->beginTransaction();
+
+		$em->createQueryBuilder()->insert('livro')
+		->values(['id' => '?','titulo' => '?', 'id_editora' => '?'])
+		->setParameter(0,  rand(10, 20))
+		->setParameter(1, 'Lorem Ipsum')
+		->setParameter(2, 1)
+		->execute();
+
+		$em->createQueryBuilder()->insert('editora')
+		->values(['id' => ':id', 'nome' => ':nome'])
+		->setParameter('id', 6)
+		->setParameter('nome', 'teste')
+		->execute();
+
+		$em->commit();
+
+	} catch(Exception $e){
+		$em->rollBack();
+		createLog($em->createQueryBuilder(), $e);
+		throw $e;
+	}
+}
+
+function createLog($em, $e){
+	$em->insert('log')
+	->values(['message' => ':message', 'date' => ':date'])
+	->setParameter('message',  $e->getMessage())
+	->setParameter('date', date("d/m/y H:i:s"))
+	->execute();
+}
+
+$livro = $em->createQueryBuilder()->select("l.*")->from("livro", "l")->execute();
+print '<pre>';
+print_r($livro->fetchAll());

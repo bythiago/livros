@@ -1,0 +1,19 @@
+{
+    "name": "",
+    "require": {
+        "doctrine/orm": "^2.6",
+        "symfony/var-dumper": "^4.3",
+        "symfony/http-foundation": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\Livros\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Thiago Vieira",
+            "email": "thiiagovieir@gmail.com"
+        }
+    ]
+}
